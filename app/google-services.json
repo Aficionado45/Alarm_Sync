@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "995877347264",
+    "firebase_url": "https://alarm-synchroniser-100bb-default-rtdb.firebaseio.com",
+    "project_id": "alarm-synchroniser-100bb",
+    "storage_bucket": "alarm-synchroniser-100bb.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:995877347264:android:f4cb2b615474230c51b225",
+        "android_client_info": {
+          "package_name": "com.example.alarmsynchroniser"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "995877347264-at7gur55ichaopc8tk9s3uao1lua7vf9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB2syH9hU8II_7_NFg-jGtIeigR8j-oELo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "995877347264-at7gur55ichaopc8tk9s3uao1lua7vf9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
