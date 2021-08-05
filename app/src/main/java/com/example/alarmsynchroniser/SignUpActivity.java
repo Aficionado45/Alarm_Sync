@@ -42,8 +42,6 @@ public class SignUpActivity extends AppCompatActivity {
     ProgressDialog progressDialog;
     FirebaseAuth mAuth;
     TextView mHaveaccountTv;
-    FirebaseDatabase rootNode;
-    DatabaseReference reference;
 
     String UserID;
 
@@ -66,7 +64,7 @@ public class SignUpActivity extends AppCompatActivity {
         mHaveaccountTv=findViewById(R.id.have_accountTv);
 
         mAuth=FirebaseAuth.getInstance();
-        rootNode = FirebaseDatabase.getInstance();
+
 
         progressDialog= new ProgressDialog(this);
         progressDialog.setMessage("Signing You Up...");
@@ -90,45 +88,7 @@ public class SignUpActivity extends AppCompatActivity {
                     mPasswordEt.setError("Password and Confirm Password Does Not Match");
                     mPasswordEt.setFocusable(true);
                 }
-
-                mAuth.createUserWithEmailAndPassword(email,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if(task.isSuccessful()){
-
-                            // send verification link
-                            Toast.makeText(SignUpActivity.this, "User Created.", Toast.LENGTH_SHORT).show();
-                            UserID = mAuth.getCurrentUser().getUid();
-                            reference  = rootNode.getReference("Users");
-                            Map<String,Object> user = new HashMap<>();
-                            user.put("fullName",name);
-                            user.put("email",email);
-                            user.put("phone",mobile);
-                            user.put("user_id",UserID);
-
-                            reference.setValue("Please Work");
-
-                            reference.child(UserID).setValue(user).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(Void aVoid) {
-                                    Log.d(TAG, "onSuccess: User Profile is created for "+ UserID);
-                                }
-                            }).addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    Log.d(TAG, "onFailure: " + e.toString());
-                                }
-                            });
-                            startActivity(new Intent(SignUpActivity.this, HomeActivity.class));
-                            finish();
-
-                        }else {
-                            progressDialog.dismiss();
-                            Toast.makeText(SignUpActivity.this, "Authentication Failed", Toast.LENGTH_SHORT).show();
-
-                        }
-                    }
-                });
+                registerUser(name,email,mobile,password);
 
             }
         });
@@ -143,6 +103,48 @@ public class SignUpActivity extends AppCompatActivity {
 
     }
 
+    private void registerUser(String name, String email, String mobile, String password) {
+
+        progressDialog.show();
+
+        mAuth.createUserWithEmailAndPassword(email,password)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if(task.isSuccessful()){
+                            progressDialog.dismiss();
+                            FirebaseUser user=mAuth.getCurrentUser();
+
+                            String email=user.getEmail();
+                            String uid=user.getUid();
+
+                            HashMap<Object,String> hashmap=new HashMap<>();
+                            hashmap.put("email",email);
+                            hashmap.put("uid",uid);
+                            hashmap.put("fullName",name);
+                            hashmap.put("phone",mobile);
+
+                            FirebaseDatabase database=FirebaseDatabase.getInstance();
+                            DatabaseReference reference=database.getReference("Users");
+                            reference.child(uid).setValue(hashmap);
+
+
+                            startActivity(new Intent(SignUpActivity.this, DashboardActivity.class));
+                            finish();
+                        }
+                        else{
+                            progressDialog.dismiss();
+                            Toast.makeText(SignUpActivity.this, "Authentication Failed", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                progressDialog.dismiss();
+                Toast.makeText(SignUpActivity.this, ""+e.getMessage(),Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
 
 
     @Override

@@ -37,7 +37,7 @@ public class LoginActivity extends AppCompatActivity {
     Button mLoginbtn;
     TextView mNothave,mForgot;
 
-    private FirebaseAuth mAuth;
+    FirebaseAuth mAuth;
     ProgressDialog pd;
 
     @Override
@@ -156,19 +156,8 @@ public class LoginActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if(task.isSuccessful()){
                             FirebaseUser user=mAuth.getCurrentUser();
-
-                            String email=user.getEmail();
-                            String uid=user.getUid();
-                            HashMap<Object,String> hashmap= new HashMap<>();
-                            hashmap.put("email",email);
-                            hashmap.put("uid",uid);
-
-                            FirebaseDatabase database= FirebaseDatabase.getInstance();
-                            DatabaseReference reference= database.getReference("Users");
-                            reference.child(uid).setValue(hashmap);
-
                             pd.dismiss();
-                            startActivity(new Intent(LoginActivity.this,HomeActivity.class));
+                            startActivity(new Intent(LoginActivity.this,DashboardActivity.class));
                             finish();
                         }
 
